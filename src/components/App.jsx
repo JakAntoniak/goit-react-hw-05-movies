@@ -11,6 +11,9 @@ const MovieDetails = lazy(() =>
 const Cast = lazy(() => import('./Movies/MovieDetails/Cast.jsx'));
 const Reviews = lazy(() => import('./Movies/MovieDetails/Reviews.jsx'));
 
+const renderPaths = (paths, Element) =>
+  paths.map(path => <Route key={path} path={path} element={Element} />);
+
 export const App = () => {
   return (
     <div>
@@ -18,7 +21,7 @@ export const App = () => {
 
       <Suspense fallback={<div>Loading...</div>}>
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          {renderPaths(['/', '/goit-react-hw-05-movies'], <HomePage />)}
           <Route path="/movies" element={<Movies />} />
           <Route path="/movies/:movieId" element={<MovieDetails />}>
             <Route path="reviews" element={<Reviews />} />
