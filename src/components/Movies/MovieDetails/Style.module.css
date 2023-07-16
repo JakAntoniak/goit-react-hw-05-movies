@@ -1,0 +1,42 @@
+.main {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.poster {
+  width: 300px;
+  flex-shrink: 0;
+}
+
+.info {
+  padding-left: 1rem;
+  flex: 1;
+}
+
+.additionalInfo {
+  flex-basis: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.outlet {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.actor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 185px;
+  margin: 10px;
+}
+
+.actor img {
+  width: 100%;
+}
+
+.details {
+  text-align: center;
+}

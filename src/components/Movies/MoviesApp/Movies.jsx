@@ -1,90 +1,45 @@
-import { nanoid } from 'nanoid';
-import ContactForm from '../ContactForm/ContactForm';
-import ContactList from '../ContactList/ContactList';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import Filter from '../Filter/Filter';
-import { useEffect, useState } from 'react';
 
-const Phonebook = () => {
-  const [contacts, setContacts] = useState([]);
-  const [filter, setFilter] = useState('');
+const Movies = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
 
-  useEffect(() => {
-    if (localStorage.getItem('contacts')) {
-      setContacts(JSON.parse(localStorage.getItem('contacts')));
-    } else {
-      localStorage.setItem('contacts', JSON.stringify([]));
+  const handleSearch = async () => {
+    const API_KEY = '7bfaca5914dfe808eee9ce7ecac1ff40';
+    const URL = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${searchQuery}`;
+    try {
+      const response = await fetch(URL);
+      const data = await response.json();
+      setSearchResults(data.results);
+    } catch (error) {
+      console.error(error);
     }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  });
-
-  const addContact = event => {
-    event.preventDefault();
-
-    const nameInput = document.querySelector('#name').value;
-
-    const numberInput = document.querySelector('#number').value;
-
-    const nameExists = contacts.some(contact => contact.name === nameInput);
-
-    if (nameExists) {
-      alert(`${nameInput} is already present in the phonebook`);
-      return;
-    }
-    const newContact = {
-      id: `id-${nanoid()}`,
-      name: nameInput,
-      number: numberInput,
-    };
-
-    setContacts([...contacts, newContact]);
-  };
-
-  const deleteContact = event => {
-    event.preventDefault();
-
-    const targetName = event.target.name;
-    const newContacts = [...contacts];
-
-    const targetIndex = newContacts.findIndex(
-      element => element.name === targetName
-    );
-
-    newContacts.splice(targetIndex, 1);
-
-    setContacts(newContacts);
-  };
-
-  const handleFilterUpdate = event => {
-    event.preventDefault();
-
-    const newFilterValue = document.querySelector('#filter-input').value;
-
-    console.log(newFilterValue);
-    setFilter(newFilterValue);
   };
 
   return (
-    <>
-      <h1>Phonebook</h1>
-      <ContactForm addContact={addContact} />
-      <h2>Contacts</h2>
-      <Filter handleFilterUpdate={handleFilterUpdate} />
-      <ContactList
-        contacts={contacts}
-        deleteContact={deleteContact}
-        filter={filter}
+    <div>
+      <input
+        type="text"
+        value={searchQuery}
+        onChange={e => setSearchQuery(e.target.value)}
       />
-    </>
+      <button onClick={handleSearch}>Search</button>
+      <ul>
+        {searchResults.map(result => (
+          <li key={result.id}>
+            <Link to={`/movies/${result.id}`}>{result.title}</Link>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 };
 
-Phonebook.propTypes = {
-  contacts: PropTypes.array,
-  filter: PropTypes.string,
+Movies.propTypes = {
+  searchQuery: PropTypes.string,
+  searchResults: PropTypes.array,
 };
 
-export default Phonebook;
+export default Movies;

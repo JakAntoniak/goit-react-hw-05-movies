@@ -1,9 +1,32 @@
-import Phonebook from './Phonebook/PhonebookApp/Phonebook';
+import { NoMatch } from './NoMatch.jsx';
+import Header from './Header.jsx';
+import { Routes, Route } from 'react-router-dom';
+import { Suspense, lazy } from 'react';
+
+const HomePage = lazy(() => import('./Movies/HomePage/Home.jsx'));
+const Movies = lazy(() => import('./Movies/MoviesApp/Movies.jsx'));
+const MovieDetails = lazy(() =>
+  import('./Movies/MovieDetails/MovieDetails.jsx')
+);
+const Cast = lazy(() => import('./Movies/MovieDetails/Cast.jsx'));
+const Reviews = lazy(() => import('./Movies/MovieDetails/Reviews.jsx'));
 
 export const App = () => {
   return (
     <div>
-      <Phonebook />
+      <Header />
+
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/movies" element={<Movies />} />
+          <Route path="/movies/:movieId" element={<MovieDetails />}>
+            <Route path="reviews" element={<Reviews />} />
+            <Route path="cast" element={<Cast />} />
+          </Route>
+          <Route path="*" element={<NoMatch />} />
+        </Routes>
+      </Suspense>
     </div>
   );
 };
